@@ -1,5 +1,6 @@
 {
   inputs.utils.url = path:../../;
+  inputs.nixpkgs.url = github:NixOS/nixpkgs/3c4a65f323dd;
 
   outputs = inputs@{ self, nixpkgs, utils }:
     utils.lib.mkFlake {
@@ -24,7 +25,6 @@
       hosts.PatchedHost.modules = [
         ({ lib, ... }: {
           patchedModule.test = lib.patchedFunction "using patched module via patched function";
-          nixpkgs.config.packageOverrides = pkgs: { };
 
           # To keep Nix from complaining
           boot.loader.grub.devices = [ "nodev" ];
@@ -54,7 +54,7 @@
           {
 
             # Patched package gets passed to `packageBuilder`
-            patchedPackageGetsPassedToBuilders = isEqual self.packages.x86_64-linux.flake-utils-plus-test.pname "hello";
+            patchedPackageGetsPassedToBuilders = isEqual self.packages.x86_64-linux.flake-utils-plus-test.pname "coreutils";
 
             # Modules (and lib) from patched nixpkgs are used
             patchedModuleAndFunctionWorks = isEqual hostConfig.patchedModule.test "using patched module via patched function";
@@ -64,9 +64,6 @@
 
             # `channels.nixpkgs.config.*` is also used
             channelSpecificConfigWorks = hasKey hostConfig.nixpkgs.pkgs.config "allowUnfree";
-
-            # `options.nixpkgs.config.*` is also used
-            modulesNixpkgsConfigWorks = hasKey hostConfig.nixpkgs.pkgs.config "packageOverrides";
 
           };
       };

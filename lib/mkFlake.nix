@@ -146,7 +146,6 @@ let
 
               (if options ? nixpkgs.pkgs then
                 {
-                  nixpkgs.config = selectedNixpkgs.config;
                   nixpkgs.pkgs =
                     # Make sure we don't import nixpkgs again if not
                     # necessary. We can't use `config.nixpkgs.config`
@@ -236,8 +235,8 @@ mergeAny otherArguments (
       { inherit pkgs; }
       // (foldl' mkOutputs { } (attrNames systemOutputs))
     )
-  # produces attrset in the shape of
-  # { nixosConfigurations = {}; darwinConfigurations = {};  ... }
-  # according to profile.output or the default `nixosConfigurations`
-  // foldl' mergeAny { } (attrValues (mapAttrs configurationBuilder hosts))
+    # produces attrset in the shape of
+    # { nixosConfigurations = {}; darwinConfigurations = {};  ... }
+    # according to profile.output or the default `nixosConfigurations`
+    // foldl' mergeAny { } (attrValues (mapAttrs configurationBuilder hosts))
 )
